@@ -138,10 +138,13 @@ System({
 }, async (message, match) => {
     if(!match) return message.reply("_*eg: getvar sudo*_");
     const requestedVar = match.trim().toUpperCase();
-    if (process.env.hasOwnProperty(requestedVar)) {
-        message.reply(`*${requestedVar}*: ${process.env[requestedVar]}`);
+    if (typeof requestedVar !== 'string' || !requestedVar.trim()) {
+          await message.reply("_*Invalid variable name provided.*_");
+    } else if (Object.prototype.hasOwnProperty.call(process.env, requestedVar) || Object.prototype.hasOwnProperty.call(Config, requestedVar)) {
+           const value = process.env[requestedVar] || Config[requestedVar];
+           await message.reply(`*${requestedVar}*: ${value}`);
     } else {
-        message.reply(`_*Variable '${requestedVar}' not found.*_`);
+           await message.reply(`_*Variable '${requestedVar}' not found.*_`);
     }
 });
 
